@@ -1,0 +1,4 @@
+certifi==2021.5.30
+future==0.18.2
+paho-mqtt==1.5.1
+python-ipmi==0.5.1
