@@ -19,8 +19,6 @@ def main():
     password = os.getenv('IPMI_PASS', "ADMIN")
     mqtt_host = os.getenv('MQTT_HOST', "192.168.1.1")
 
-    print(host, user, password, mqtt_host)
-
     interface = pyipmi.interfaces.create_interface('ipmitool',
                                                    interface_type='lanplus')
     ipmi = pyipmi.create_connection(interface)
@@ -39,10 +37,7 @@ def main():
             "avg_power": rsp.average_power
         }
 
-        print(power)
-        
         publish.single("server/power", json.dumps(power), hostname=mqtt_host)
-        print(power)
         time.sleep(10)
 
         # print('Power Reading')
