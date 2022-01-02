@@ -1,6 +1,6 @@
 #/usr/bin/python3
 
-import sys
+import os
 import json
 import time
 
@@ -10,13 +10,16 @@ import paho.mqtt.publish as publish
 
 def main():
 
-    if len(sys.argv) < 4:
-        print('<HOST> <USER> <PASSWORD>')
-        sys.exit(1)
+    # if len(sys.argv) < 4:
+    #     print('<HOST> <USER> <PASSWORD>')
+    #     sys.exit(1)
 
-    host = sys.argv[1]
-    user = sys.argv[2]
-    password = sys.argv[3]
+    host = os.getenv('IPMI_HOST', "192.168.1.1")
+    user = os.getenv('IPMI_USER', "ADMIN")
+    password = os.getenv('IPMI_PASS', "ADMIN")
+    mqtt_host = os.getenv('MQTT_HOST', "192.168.1.1")
+
+    print(host, user, password, mqtt_host)
 
     interface = pyipmi.interfaces.create_interface('ipmitool',
                                                    interface_type='lanplus')
@@ -36,7 +39,9 @@ def main():
             "avg_power": rsp.average_power
         }
 
-        publish.single("server/power", json.dumps(power), hostname=host)
+        print(power)
+        
+        publish.single("server/power", json.dumps(power), hostname=mqtt_host)
         print(power)
         time.sleep(10)
 
